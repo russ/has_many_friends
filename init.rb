@@ -1,1 +1,1 @@
-ActiveRecord::Base.send( :include, HasManyFriends::UserExtensions )
+require File.dirname(__FILE__) + '/lib/has_many_friends'
