@@ -5,6 +5,11 @@ class FriendshipTest < Test::Unit::TestCase
 	should_belong_to :friendshipped_for_me
 end
 
+class RivalryTest < Test::Unit::TestCase
+	should_belong_to :rivaled_by_me
+	should_belong_to :rivaled_for_me
+end
+
 class UserTest < Test::Unit::TestCase
 	should_have_many :friendships_by_me
 	should_have_many :friendships_for_me
@@ -13,12 +18,17 @@ class UserTest < Test::Unit::TestCase
 	should_have_many :pending_friends_by_me
 	should_have_many :pending_friends_for_me
 
+	should_have_many :rivaled_by_me
+	should_have_many :rivaled_for_me
+	should_have_many :rivals_by_me
+	should_have_many :rivals_for_me
+
 	context "User with friends" do
 		setup do
-			@longbob = Factory(:user, :name => 'Longbob')
-			@shortbob = Factory(:user, :name => 'ShortBob')
-			@pendingbob = Factory(:user, :name => 'PendingBob')
-			@newbob = Factory(:user, :name => 'NewBob')
+			@longbob = Factory(:user, :name => 'longbob')
+			@shortbob = Factory(:user, :name => 'shortbob')
+			@pendingbob = Factory(:user, :name => 'pendingbob')
+			@newbob = Factory(:user, :name => 'newbob')
 
 			Factory(:friendship,
 				:user_id => @longbob.id,
@@ -78,6 +88,41 @@ class UserTest < Test::Unit::TestCase
 
 		should "automatically be friends with newbob" do
 			assert @longbob.become_friends_with(@newbob)
+		end
+	end
+
+	context "User with rivals" do
+		setup do
+			@longbob = Factory(:user, :name => 'longbob')
+			@shortbob = Factory(:user, :name => 'shortbob')
+
+			Factory(:rivalry,
+				:user_id => @longbob.id,
+				:rival_id => @shortbob.id)
+		end
+
+		should "have rivals" do
+			assert_equal 1, @longbob.rivals.size
+		end
+
+		should "have online rivals" do
+			assert_equal 1, @longbob.online_rivals.size
+		end
+
+		should "have a rivalry relation with shortbob" do
+			assert @longbob.rivalry(@shortbob).is_a?(Rivalry)
+		end
+
+		should "be rivals with shortbob" do
+			assert @longbob.is_rivals_with?(@shortbob)
+		end
+
+		should "delete rivalry with shortbob" do
+			assert @longbob.delete_rivalry_with(@shortbob)
+		end
+
+		should "become a rival of newbob" do
+			assert @longbob.become_rival_of(@newbob)
 		end
 	end
 end

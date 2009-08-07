@@ -13,7 +13,7 @@ require 'lib/has_many_friends'
 
 # Connect to database
 config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
-ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/debug.log")
+ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + '/debug.log')
 ActiveRecord::Base.establish_connection(config['test'])
 
 # Create tables
@@ -23,13 +23,17 @@ ActiveRecord::Base.connection.create_table(:users, :force => true) do |table|
 	table.column :updated_at, :datetime
 end
 
-ActiveRecord::Base.connection.create_table(:friendships, :force => true) do |table|
+ActiveRecord::Base.connection.create_table(:relationships, :force => true) do |table|
+	table.column :type, :string
 	table.column :user_id, :integer
 	table.column :friend_id, :integer
+	table.column :rival_id, :integer
 	table.column :created_at, :datetime
 	table.column :accepted_at, :datetime
 end
 
 # Dummy classes
 class User < ActiveRecord::Base; include HasManyFriends::Models::User; end
-class Friendship < ActiveRecord::Base; include HasManyFriends::Models::Friendship; end
+class Relationship < ActiveRecord::Base; include HasManyFriends::Models::Relationship; end
+class Friendship < Relationship; include HasManyFriends::Models::Friendship; end
+class Rivalry < Relationship; include HasManyFriends::Models::Rivalry; end

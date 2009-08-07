@@ -5,3 +5,6 @@ end
 
 Factory.define(:friendship) do |f|
 end
+
+Factory.define(:rivalry) do |f|
+end

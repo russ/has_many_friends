@@ -13,9 +13,9 @@ class HmfFriendshipModelGenerator < Rails::Generator::NamedBase
       m.directory File.join('test/fixtures', class_path)
 
       # Model class, unit test, and fixtures.
-      m.template 'model.rb',      File.join('app/models', class_path, "#{file_name}.rb")
-      m.template 'unit_test.rb',  File.join('test/unit', class_path, "#{file_name}_test.rb")
-      m.template 'fixtures.yml',  File.join('test/fixtures', class_path, "#{table_name}.yml")
+      m.template 'relationship.rb', File.join('app/models', class_path, 'relationship.rb')
+      m.template 'friendship.rb',   File.join('app/models', class_path, 'friendship.rb')
+      m.template 'rivalry.rb',      File.join('app/models', class_path, 'rivalry.rb')
       
       unless options[:skip_migration]
         m.migration_template 'migration.rb', 'db/migrate', :assigns => {
@@ -25,11 +25,11 @@ class HmfFriendshipModelGenerator < Rails::Generator::NamedBase
     end
   end
 
-  protected
+protected
+
   def add_options!(opt)
     opt.separator ''
     opt.separator 'Options:'
-    opt.on("--skip-migration", 
-           "Don't generate a migration file for this model") { |v| options[:skip_migration] = v }
+    opt.on('--skip-migration', 'Don\'t generate a migration file for this model') { |v| options[:skip_migration] = v }
   end
 end
